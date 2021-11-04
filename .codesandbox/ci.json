@@ -1,6 +1,6 @@
 {
-    "installCommand": "install:codesandbox",
-    "buildCommand": "lerna run build:lib",
+    "installCommand": "bootstrap",
+    "buildCommand": "build:lib",
     "packages": [
         "packages/semi-animation",
         "packages/semi-animation-react",
