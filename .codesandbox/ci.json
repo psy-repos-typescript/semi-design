@@ -13,6 +13,7 @@
         "packages/semi-ui",
         "packages/semi-webpack"
     ],
+    "node": "14",
     "sandboxes": [
         "new"
     ]
