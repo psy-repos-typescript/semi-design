@@ -13,6 +13,18 @@
         "packages/semi-ui",
         "packages/semi-webpack"
     ],
+    "publishDirectory": {
+        "@douyinfe/semi-animation": "packages/semi-animation",
+        "@douyinfe/semi-animation-react": "packages/semi-animation-react",
+        "@douyinfe/semi-animation-styled": "packages/semi-animation-styled",
+        "@douyinfe/semi-foundation": "packages/semi-foundation",
+        "@douyinfe/semi-icons": "packages/semi-icons",
+        "@douyinfe/semi-illustrations": "packages/semi-illustrations",
+        "@douyinfe/semi-scss-compile": "packages/semi-scss-compile",
+        "@douyinfe/semi-theme-default": "packages/semi-theme-default",
+        "@douyinfe/semi-ui": "packages/semi-ui",
+        "@douyinfe/semi-webpack-plugin": "packages/semi-webpack"
+      },
     "node": "14",
     "sandboxes": [
         "new"
