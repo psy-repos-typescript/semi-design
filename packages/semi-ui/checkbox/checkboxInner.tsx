@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -26,6 +25,7 @@ export interface CheckboxInnerProps {
     focusInner?: boolean;
     onInputFocus?: (e: any) => void;
     onInputBlur?: (e: any) => void;
+    preventScroll?: boolean
 }
 
 class CheckboxInner extends PureComponent<CheckboxInnerProps> {
@@ -49,6 +49,7 @@ class CheckboxInner extends PureComponent<CheckboxInnerProps> {
         focusInner: PropTypes.bool,
         onInputFocus: PropTypes.func,
         onInputBlur: PropTypes.func,
+        preventScroll: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -61,7 +62,8 @@ class CheckboxInner extends PureComponent<CheckboxInnerProps> {
     }
 
     focus() {
-        this.inputEntity.focus();
+        const { preventScroll } = this.props;
+        this.inputEntity.focus({ preventScroll });
     }
 
     render() {
@@ -80,7 +82,7 @@ class CheckboxInner extends PureComponent<CheckboxInnerProps> {
         const inner = classnames({
             [`${prefix}-inner-display`]: true,
             [`${prefix}-focus`]: focusInner,
-            [`${prefix}-focus-border`]:  focusInner && !checked,
+            [`${prefix}-focus-border`]: focusInner && !checked,
         });
 
         const icon = checked ? (
@@ -89,13 +91,13 @@ class CheckboxInner extends PureComponent<CheckboxInnerProps> {
             <IconCheckboxIndeterminate />
         ) : null;
 
-        const inputProps: React.InputHTMLAttributes<HTMLInputElement>  = {
+        const inputProps: React.InputHTMLAttributes<HTMLInputElement> = {
             type: "checkbox",
             'aria-label': this.props['aria-label'],
             'aria-disabled': disabled,
             'aria-checked': checked,
             'aria-labelledby': addonId,
-            'aria-describedby':extraId || this.props['aria-describedby'],
+            'aria-describedby': extraId || this.props['aria-describedby'],
             'aria-invalid': this.props['aria-invalid'],
             'aria-errormessage': this.props['aria-errormessage'],
             'aria-required': this.props['aria-required'],

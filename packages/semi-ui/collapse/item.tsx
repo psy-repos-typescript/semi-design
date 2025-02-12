@@ -15,11 +15,15 @@ export interface CollapsePanelProps {
     children?: React.ReactNode;
     reCalcKey?: number | string;
     style?: CSSProperties;
+    showArrow?: boolean;
+    disabled?: boolean;
+    onMotionEnd?: () => void
 }
 
 export default class CollapsePanel extends PureComponent<CollapsePanelProps> {
     static contextType: React.Context<CollapseContextType> = CollapseContext;
-
+    headerExpandIconTriggerRef = React.createRef<HTMLElement>()
+    private ariaID: string = ""
     static propTypes = {
         itemKey: PropTypes.string,
         extra: PropTypes.node,
@@ -32,14 +36,26 @@ export default class CollapsePanel extends PureComponent<CollapsePanelProps> {
             PropTypes.string,
             PropTypes.number,
         ]),
+        showArrow: PropTypes.bool,
+        disabled: PropTypes.bool,
     };
 
-    private ariaID = getUuidShort({});
+    static defaultProps = {
+        showArrow: true,
+        disabled: false,
+    };
+
 
     context: CollapseContextType;
 
+
+    componentDidMount() {
+        this.ariaID = getUuidShort({});
+    }
+
     renderHeader(active: boolean, expandIconEnable = true) {
         const {
+            showArrow,
             header,
             extra,
         } = this.props;
@@ -55,9 +71,8 @@ export default class CollapsePanel extends PureComponent<CollapsePanelProps> {
             collapseIcon = (<IconChevronUp/>);
         }
         const icon = (
-            <span aria-hidden='true' className={cls([`${cssClasses.PREFIX}-header-icon`,
+            <span ref={this.headerExpandIconTriggerRef} aria-hidden='true' className={cls([`${cssClasses.PREFIX}-header-icon`,
                 { [`${cssClasses.PREFIX}-header-iconDisabled`]: !expandIconEnable }])}>
-                {/* eslint-disable-next-line no-nested-ternary */}
                 {expandIconEnable ? (active ? collapseIcon : expandIcon) : expandIcon}
             </span>
         );
@@ -65,22 +80,30 @@ export default class CollapsePanel extends PureComponent<CollapsePanelProps> {
         if (typeof header === 'string') {
             return (
                 <>
-                    {iconPosLeft ? icon : null}
+                    {showArrow && (iconPosLeft ? icon : null)}
                     <span>{header}</span>
                     <span className={`${cssClasses.PREFIX}-header-right`}>
                         <span>{extra}</span>
-                        {iconPosLeft ? null : icon}
+                        {showArrow && (iconPosLeft ? null : icon)}
                     </span>
                 </>
             );
         }
         return (
             <>
-                {iconPosLeft ? icon : null}
+                {showArrow && (iconPosLeft ? icon : null)}
                 {header}
-                {iconPosLeft ? null : icon}
+                {showArrow && (iconPosLeft ? null : icon)}
             </>
         );
+    }
+
+    handleClick = (itemKey: string, e: React.MouseEvent)=>{
+        // Judge user click Icon or Header
+        // Don't mount this func into icon span wrapper, or get triggered twice because of event propagation
+        if (this.context.clickHeaderToExpand || this.headerExpandIconTriggerRef.current?.contains(e.target as HTMLElement)) {
+            this.context.onClick(itemKey, e);
+        }
     }
 
     render() {
@@ -91,14 +114,16 @@ export default class CollapsePanel extends PureComponent<CollapsePanelProps> {
             reCalcKey,
             header,
             extra,
+            showArrow,
+            disabled,
             ...restProps
         } = this.props;
         const {
             keepDOM,
             expandIconPosition,
             activeSet,
-            onClick,
             motion,
+            lazyRender
         } = this.context;
         const active = activeSet.has(itemKey);
         const itemCls = cls(className, {
@@ -106,6 +131,7 @@ export default class CollapsePanel extends PureComponent<CollapsePanelProps> {
         });
         const headerCls = cls({
             [`${cssClasses.PREFIX}-header`]: true,
+            [`${cssClasses.PREFIX}-header-disabled`]: disabled,
             [`${cssClasses.PREFIX}-header-iconLeft`]: expandIconPosition === 'left',
         });
         const contentCls = cls({
@@ -120,16 +146,19 @@ export default class CollapsePanel extends PureComponent<CollapsePanelProps> {
                     role="button"
                     tabIndex={0}
                     className={headerCls}
+                    aria-disabled={disabled}
                     aria-expanded={active ? 'true' : 'false'}
                     aria-owns={this.ariaID}
-                    onClick={e => onClick(itemKey, e)}
+                    onClick={e => !disabled && this.handleClick(itemKey, e)}
                 >
-                    {this.renderHeader(active, children !== undefined)}
+                    {this.renderHeader(active, children !== undefined && !disabled)}
                 </div>
                 {
                     children && (
                         <Collapsible
+                            lazyRender={lazyRender}
                             isOpen={active} keepDOM={keepDOM} motion={motion}
+                            onMotionEnd={this.props.onMotionEnd}
                             reCalcKey={reCalcKey}>
                             <div
                                 className={contentCls}

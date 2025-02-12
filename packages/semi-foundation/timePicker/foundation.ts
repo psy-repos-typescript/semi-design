@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { strings } from './constants';
 import BaseFoundation, { DefaultAdapter } from '../base/foundation';
 import {
@@ -10,7 +9,7 @@ import {
     transformToArray,
     isTimeFormatLike
 } from './utils';
-import { split } from 'lodash';
+import { split, isUndefined } from 'lodash';
 import { isValid, format, getHours } from 'date-fns';
 import { utcToZonedTime, zonedTimeToUtc } from '../utils/date-fns-extra';
 import isNullOrUndefined from '../utils/isNullOrUndefined';
@@ -41,7 +40,7 @@ export interface TimePickerAdapter<P = Record<string, any>, S = Record<string, a
     notifyChange(input: string | string[], value: Date | Date[]): void;
     notifyFocus: (e: any) => void;
     notifyBlur: (e: any) => void;
-    isRangePicker: () => boolean;
+    isRangePicker: () => boolean
 }
 
 // TODO: split, timePicker different components cannot share a foundation
@@ -84,10 +83,8 @@ class TimePickerFoundation<P = Record<string, any>, S = Record<string, any>> ext
         return hDis || mDis || sDis;
     }
 
-    isValidTimeZone(timeZone?: string | number) {
-        const _timeZone = timeZone === undefined ? this.getProp('timeZone') : timeZone;
-
-        return ['string', 'number'].includes(typeof _timeZone) && _timeZone !== '';
+    isValidTimeZone(timeZone: string | number) {
+        return ['string', 'number'].includes(typeof timeZone) && timeZone !== '';
     }
 
     getDefaultFormatIfNeed(): string {
@@ -121,7 +118,7 @@ class TimePickerFoundation<P = Record<string, any>, S = Record<string, any>> ext
         (value as any[]).forEach(v => {
             const pv = parseToDate(v, formatToken, dateFnsLocale);
             if (!isNaN(pv.getTime())) {
-                parsedValues.push(this.isValidTimeZone() ? utcToZonedTime(pv, timeZone) : pv);
+                parsedValues.push(this.isValidTimeZone(timeZone) ? utcToZonedTime(pv, timeZone) : pv);
             }
         });
 
@@ -182,7 +179,7 @@ class TimePickerFoundation<P = Record<string, any>, S = Record<string, any>> ext
             isAM[index] = panelIsAM;
             const inputValue = this.formatValue(value);
 
-            if (this.getState('isAM')[index] !== result.isAM){
+            if (this.getState('isAM')[index] !== result.isAM) {
                 this.setState({ isAM } as any);
             }
             if (!this._isControlledComponent('value')) {
@@ -203,28 +200,30 @@ class TimePickerFoundation<P = Record<string, any>, S = Record<string, any>> ext
 
     refreshProps(props: any = {}) {
         const { value, timeZone, __prevTimeZone } = props;
-        if (!isNullOrUndefined(value)) {
-            let dates = this.parseValue(value);
-            const invalid = this.validateDates(dates);
+        
+        let dates = this.parseValue(value);
 
-            if (!invalid) {
-                if (this.isValidTimeZone(timeZone)) {
-                    dates = dates.map(date =>
-                        utcToZonedTime(
-                            this.isValidTimeZone(__prevTimeZone) ? zonedTimeToUtc(date, __prevTimeZone) : date,
-                            timeZone
-                        )
-                    );
-                }
-                const inputValue = this.formatValue(dates);
-
-                this.setState({
-                    value: dates,
-                    invalid,
-                    inputValue,
-                } as any);
+        let invalid = dates.some(d => isNaN(Number(d)));
+        if (!invalid) {
+            if (this.isValidTimeZone(timeZone)) {
+                dates = dates.map(date =>
+                    utcToZonedTime(
+                        this.isValidTimeZone(__prevTimeZone) ? zonedTimeToUtc(date, __prevTimeZone) : date,
+                        timeZone
+                    )
+                );
             }
+            invalid = dates.some(d =>
+                this.isDisabledHMS({ hours: d.getHours(), minutes: d.getMinutes(), seconds: d.getSeconds() })
+            );
         }
+        const inputValue = this.formatValue(dates);
+
+        this.setState({
+            value: dates,
+            invalid,
+            inputValue,
+        } as any);
     }
 
     handleFocus(e: any) {
@@ -250,7 +249,7 @@ class TimePickerFoundation<P = Record<string, any>, S = Record<string, any>> ext
         this._adapter.notifyOpenChange(true);
     }
 
-    hanldePanelClose(clickedOutside: boolean, e: any) {
+    handlePanelClose(clickedOutside: boolean, e: any) {
         if (!this._isControlledComponent('open')) {
             this._adapter.unregisterClickOutSide();
             this.setPanel(false);
@@ -370,7 +369,16 @@ class TimePickerFoundation<P = Record<string, any>, S = Record<string, any>> ext
         }
 
         if (_dates && Array.isArray(_dates)) {
-            return _dates.map(date => formatToString(date, validFormat, dateFnsLocale)).join(rangeSeparator);
+            const result = _dates.map(date => {
+                let str;
+                if (isUndefined(date)) {
+                    str = '';
+                } else {
+                    str = formatToString(date, validFormat, dateFnsLocale);
+                }
+                return str;
+            });
+            return result.join(rangeSeparator);
         }
         return undefined;
     }
@@ -414,7 +422,7 @@ class TimePickerFoundation<P = Record<string, any>, S = Record<string, any>> ext
             _value = Array.isArray(_value) ? _value[0] : _value;
         }
 
-        if (this.isValidTimeZone() && _value) {
+        if (this.isValidTimeZone(timeZone) && _value) {
             const formatToken = this.getValidFormat();
             if (Array.isArray(_value)) {
                 _value = _value.map(v => zonedTimeToUtc(v, timeZone));

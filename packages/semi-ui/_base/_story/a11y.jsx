@@ -218,7 +218,7 @@ const initValues = {
             preview: true,
             fileInstance: new File([new ArrayBuffer(2048)], 'jiafang1.jpeg', { type: 'image/jpeg' }),
             url:
-                'https://sf6-cdn-tos.douyinstatic.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/bf8647bffab13c38772c9ff94bf91a9d.jpg',
+                'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/bag.jpeg',
         },
         {
             uid: '3',
@@ -229,7 +229,7 @@ const initValues = {
             preview: true,
             fileInstance: new File([new ArrayBuffer(2048)], 'jiafang2.jpeg', { type: 'image/jpeg' }),
             url:
-                'https://sf6-cdn-tos.douyinstatic.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/bf8647bffab13c38772c9ff94bf91a9d.jpg',
+                'https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/bag.jpeg',
         },
     ],
 };
@@ -336,7 +336,7 @@ export default function SemiA11y() {
                             style={{ marginRight: 12 }}
                         ></Avatar>
                         {/* 宽度计算方式为单元格设置宽度 - 非文本内容宽度 */}
-                        <Text heading={5} ellipsis={{ showTooltip: true }} style={{ width: 'calc(400px - 76px)' }}>
+                        <Text ellipsis={{ showTooltip: true }} style={{ width: 'calc(400px - 76px)' }}>
                             {text}
                         </Text>
                     </span>
@@ -1106,7 +1106,7 @@ export default function SemiA11y() {
                                 </Form>
                             </Row>
                             <Row>
-                                <Col span="12">
+                                <Col span={12}>
                                     <Tree
                                         treeData={treeData}
                                         defaultExpandAll
@@ -1117,7 +1117,7 @@ export default function SemiA11y() {
                                         }}
                                     />
                                 </Col>
-                                <Col span="12">
+                                <Col span={12}>
                                     <Transfer
                                         style={{ width: 568, height: 416 }}
                                         dataSource={transferData}

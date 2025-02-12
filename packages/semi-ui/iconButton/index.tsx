@@ -1,4 +1,3 @@
-/* eslint-disable eqeqeq */
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -26,6 +25,7 @@ export interface IconButtonProps extends ButtonProps {
     disabled?: boolean;
     noHorizontalPadding?: boolean | HorizontalPaddingType | HorizontalPaddingType[];
     prefixCls?: string;
+    contentClassName?: string;
 }
 
 // TODO: add a buttonGroup component
@@ -39,6 +39,8 @@ class IconButton extends PureComponent<IconButtonProps> {
         onMouseEnter: noop,
         onMouseLeave: noop,
     };
+
+    static elementType = "IconButton";
 
     static propTypes = {
         iconStyle: PropTypes.object,
@@ -80,6 +82,9 @@ class IconButton extends PureComponent<IconButtonProps> {
         } else if (noHorizontalPadding === true) {
             style.paddingLeft = 0;
             style.paddingRight = 0;
+        } else if (typeof noHorizontalPadding === 'string') {
+            noHorizontalPadding === 'left' && (style.paddingLeft = 0);
+            noHorizontalPadding === 'right' && (style.paddingRight = 0);
         }
 
         let finalChildren = null;
