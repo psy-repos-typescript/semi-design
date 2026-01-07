@@ -1,6 +1,6 @@
 {
     "name": "@douyinfe/semi-foundation",
-    "version": "2.90.3",
+    "version": "2.90.5",
     "description": "",
     "scripts": {
         "clean": "rimraf lib",
@@ -15,16 +15,145 @@
         "!**/*.test.ts",
         "!**/*.spec.ts"
     ],
+    "main": "lib/cjs/base/index.js",
+    "module": "lib/es/base/index.js",
+    "types": "lib/cjs/base/index.d.ts",
+    "typings": "lib/cjs/base/index.d.ts",
     "typesVersions": {
         "*": {
-            "*": [
-                "lib/es/*"
+            "lib/es/*": [
+                "lib/es/*",
+                "lib/es/*/index"
+            ],
+            "lib/es/*/*": [
+                "lib/es/*/*",
+                "lib/es/*/*/index"
+            ],
+            "lib/es/*/*/*": [
+                "lib/es/*/*/*",
+                "lib/es/*/*/*/index"
+            ],
+            "lib/es/*/*/*/*": [
+                "lib/es/*/*/*/*",
+                "lib/es/*/*/*/*/index"
+            ],
+            "lib/cjs/*": [
+                "lib/cjs/*",
+                "lib/cjs/*/index"
+            ],
+            "lib/cjs/*/*": [
+                "lib/cjs/*/*",
+                "lib/cjs/*/*/index"
+            ],
+            "lib/cjs/*/*/*": [
+                "lib/cjs/*/*/*",
+                "lib/cjs/*/*/*/index"
+            ],
+            "lib/cjs/*/*/*/*": [
+                "lib/cjs/*/*/*/*",
+                "lib/cjs/*/*/*/*/index"
             ]
         }
     },
+    "exports": {
+        ".": {
+            "types": "./lib/es/base/index.d.ts",
+            "import": "./lib/es/base/index.js",
+            "require": "./lib/cjs/base/index.js"
+        },
+        "./*": {
+            "types": "./lib/es/*/index.d.ts",
+            "import": "./lib/es/*/index.js",
+            "require": "./lib/cjs/*/index.js"
+        },
+        "./lib/es/*/*.css": {
+            "import": "./lib/es/*/*.css",
+            "require": "./lib/cjs/*/*.css",
+            "default": "./lib/es/*/*.css"
+        },
+        "./lib/es/*.css": {
+            "import": "./lib/es/*.css",
+            "require": "./lib/cjs/*.css",
+            "default": "./lib/es/*.css"
+        },
+        "./lib/cjs/*/*.css": {
+            "import": "./lib/es/*/*.css",
+            "require": "./lib/cjs/*/*.css",
+            "default": "./lib/cjs/*/*.css"
+        },
+        "./lib/cjs/*.css": {
+            "import": "./lib/es/*.css",
+            "require": "./lib/cjs/*.css",
+            "default": "./lib/cjs/*.css"
+        },
+        "./lib/es/*": {
+            "types": [
+                "./lib/es/*.d.ts",
+                "./lib/es/*/index.d.ts"
+            ],
+            "import": "./lib/es/*",
+            "default": "./lib/es/*"
+        },
+        "./lib/es/*/*": {
+            "types": [
+                "./lib/es/*/*.d.ts",
+                "./lib/es/*/*/index.d.ts"
+            ],
+            "import": "./lib/es/*/*",
+            "default": "./lib/es/*/*"
+        },
+        "./lib/es/*/*/*": {
+            "types": [
+                "./lib/es/*/*/*.d.ts",
+                "./lib/es/*/*/*/index.d.ts"
+            ],
+            "import": "./lib/es/*/*/*",
+            "default": "./lib/es/*/*/*"
+        },
+        "./lib/es/*/*/*/*": {
+            "types": [
+                "./lib/es/*/*/*/*.d.ts",
+                "./lib/es/*/*/*/*/index.d.ts"
+            ],
+            "import": "./lib/es/*/*/*/*",
+            "default": "./lib/es/*/*/*/*"
+        },
+        "./lib/cjs/*": {
+            "types": [
+                "./lib/cjs/*.d.ts",
+                "./lib/cjs/*/index.d.ts"
+            ],
+            "require": "./lib/cjs/*",
+            "default": "./lib/cjs/*"
+        },
+        "./lib/cjs/*/*": {
+            "types": [
+                "./lib/cjs/*/*.d.ts",
+                "./lib/cjs/*/*/index.d.ts"
+            ],
+            "require": "./lib/cjs/*/*",
+            "default": "./lib/cjs/*/*"
+        },
+        "./lib/cjs/*/*/*": {
+            "types": [
+                "./lib/cjs/*/*/*.d.ts",
+                "./lib/cjs/*/*/*/index.d.ts"
+            ],
+            "require": "./lib/cjs/*/*/*",
+            "default": "./lib/cjs/*/*/*"
+        },
+        "./lib/cjs/*/*/*/*": {
+            "types": [
+                "./lib/cjs/*/*/*/*.d.ts",
+                "./lib/cjs/*/*/*/*/index.d.ts"
+            ],
+            "require": "./lib/cjs/*/*/*/*",
+            "default": "./lib/cjs/*/*/*/*"
+        }
+    },
     "dependencies": {
-        "@douyinfe/semi-animation": "2.90.3",
-        "@douyinfe/semi-json-viewer-core": "2.90.3",
+        "@douyinfe/semi-animation": "2.90.5",
+        "@douyinfe/semi-json-viewer-core": "2.90.5",
         "@mdx-js/mdx": "^3.0.1",
         "async-validator": "^3.5.0",
         "classnames": "^2.2.6",
